@@ -5,12 +5,14 @@ using UnityEngine.UI;
 public class CardsFieldController : MonoBehaviour
 {
     [SerializeField] private Sprite CardBackImage;
-    [SerializeField] private Sprite[] allpossibleCardImages;
+    [SerializeField] private List<Sprite> allpossibleCardImages;
     [SerializeField] private List<Sprite> allpossiblecardImagesChosen = new();
     [SerializeField] private List<Button> CardsButtons = new();
     [SerializeField] private Transform CardsField;
 
     [SerializeField] private GameObject CardPrefab;
+
+    [SerializeField] private float timeToChooseSecondCard = 2f;
 
     readonly int numberOfCards = 6;
     private bool IsFirstCardGuessed;
@@ -19,6 +21,7 @@ public class CardsFieldController : MonoBehaviour
     private int countCorrectGuesses = 0;
     private int firstCardIndex;
     private int secondCardIndex;
+    string spritesPath = "Images/Sprites";
 
     private string firstGuessCardName, secondGuessCardName;
 
@@ -37,7 +40,7 @@ public class CardsFieldController : MonoBehaviour
 
     }
 
-
+    #region GetCards and its indices
     private void GetCards()
     {
         GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
@@ -47,6 +50,16 @@ public class CardsFieldController : MonoBehaviour
             CardsButtons[i].image.sprite = CardBackImage;
         }
     }
+    private int GetClickedCardIndex()
+    {
+        string clickedName = UnityEngine.EventSystems.EventSystem
+            .current
+            .currentSelectedGameObject
+            .name;
+
+        return int.Parse(clickedName);
+    }
+    #endregion
 
     private void PrepareCardsMatchingPairs()
     {
@@ -68,7 +81,6 @@ public class CardsFieldController : MonoBehaviour
 
         }
     }
-
     // Click on a card
     private void ClickOnACard()
     {
@@ -78,7 +90,6 @@ public class CardsFieldController : MonoBehaviour
             cardButton.onClick.AddListener(() => OnCardClick());
         }
     }
-
 
     private void OnCardClick()
     {
@@ -94,25 +105,23 @@ public class CardsFieldController : MonoBehaviour
         }
     }
 
-    private int GetClickedCardIndex()
-    {
-        string clickedName = UnityEngine.EventSystems.EventSystem
-            .current
-            .currentSelectedGameObject
-            .name;
 
-        return int.Parse(clickedName);
-    }
+
+
+    #region Card Guess
     private void HandleFirstCardGuess(int cardIndex)
     {
         IsFirstCardGuessed = true;
         firstCardIndex = cardIndex;
 
         RevealCard(cardIndex);
-
+        // get the name of a certain sprite
         firstGuessCardName = allpossiblecardImagesChosen[cardIndex].name;
 
-        DisableCard(cardIndex);
+        DisableCardClicks(cardIndex);
+
+
+        Invoke(nameof(AutoFlipFirstCard), timeToChooseSecondCard);
     }
     private void HandleSecondCardGuess(int cardIndex)
     {
@@ -123,19 +132,18 @@ public class CardsFieldController : MonoBehaviour
 
         secondGuessCardName = allpossiblecardImagesChosen[cardIndex].name;
         CheckIfCardsMatch();
-        DisableCard(cardIndex);
+        DisableCardClicks(cardIndex);
 
     }
+
+    #endregion
     private void RevealCard(int cardIndex)
     {
         CardsButtons[cardIndex].image.sprite =
             allpossiblecardImagesChosen[cardIndex];
     }
 
-    private void DisableCard(int cardIndex)
-    {
-        CardsButtons[cardIndex].interactable = false;
-    }
+
     private void CheckIfCardsMatch()
     {
         totalGameGuesses++;
@@ -151,34 +159,63 @@ public class CardsFieldController : MonoBehaviour
         else
         {
             Debug.Log("Puzzle don't Match");
-
-
-
+            Invoke(nameof(FlipCardsBackToItsOriginalPosition), 1f);
         }
     }
 
+    private void DisableCardClicks(int cardIndex)
+    {
+        CardsButtons[cardIndex].interactable = false;
+    }
+
+
+    #region CardFlipping
     private void FlipCardsBackToItsOriginalPosition()
     {
-        CardsButtons[firstCardIndex].image.sprite = CardBackImage;
-        CardsButtons[secondCardIndex].image.sprite = CardBackImage;
-
+        FlipFirstCard();
+        FlipSecondCard();
         EnableCardsClicksOn();
         ResetGuesses();
     }
+    private void FlipFirstCard()
+    {
+        CardsButtons[firstCardIndex].image.sprite = CardBackImage;
+    }
+    private void FlipSecondCard()
+    {
+        CardsButtons[secondCardIndex].image.sprite = CardBackImage;
+    }
+    private void AutoFlipFirstCard()
+    {
+        // Only flip if player didn't choose second card
+        if (IsFirstCardGuessed && !IsSecondCardGuessed)
+        {
+            FlipFirstCard();
+            EnableFirstCardClicks();
+            ResetGuesses();
+        }
+    }
+
+    #endregion
+
+    #region EnableCardClicks
 
     private void EnableCardsClicksOn()
     {
+        EnableFirstCardClicks();
+        EnableSecondCardClicks();
+    }
+
+    private void EnableFirstCardClicks()
+    {
         CardsButtons[firstCardIndex].interactable = true;
+    }
+
+    private void EnableSecondCardClicks()
+    {
         CardsButtons[secondCardIndex].interactable = true;
     }
-
-    private void ResetGuesses()
-    {
-        IsFirstCardGuessed = false;
-        IsSecondCardGuessed = false;
-    }
-
-
+    #endregion
 
 
 
@@ -191,19 +228,22 @@ public class CardsFieldController : MonoBehaviour
         LoadAllPossibleCardsSprites();
         CreateCardsInCardsField();
     }
-
-    private void LoadAllPossibleCardsSprites()
-    {
-        allpossibleCardImages = Resources.LoadAll<Sprite>("Images/Sprites");
-    }
-
     void Start()
     {
         GetCards();
         PrepareCardsMatchingPairs();
         ClickOnACard();
     }
-
-
+    private void LoadAllPossibleCardsSprites()
+    {
+        allpossibleCardImages = new List<Sprite>(
+        Resources.LoadAll<Sprite>(spritesPath)
+    );
+    }
+    private void ResetGuesses()
+    {
+        IsFirstCardGuessed = false;
+        IsSecondCardGuessed = false;
+    }
 
 }
