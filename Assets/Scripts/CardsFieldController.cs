@@ -79,42 +79,7 @@ public class CardsFieldController : MonoBehaviour
         }
     }
 
-    // private void OnCardClick()
-    // {
-    //     // 1. Get the name of the EXACT button that was just clicked
-    //     string clickedName = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name;
-    //     int cardIndex = int.Parse(clickedName);
 
-
-
-
-
-    //     if (!IsFirstCardGuessed)
-    //     {
-    //         IsFirstCardGuessed = true;
-    //         firstCardIndex = cardIndex;
-    //         // Change the sprite of the button to the on of the sprites in the array of chosen sprite cards
-    //         CardsButtons[firstCardIndex].image.sprite = allpossiblecardImagesChosen[firstCardIndex];
-
-    //         firstGuessCardName = allpossiblecardImagesChosen[firstCardIndex].name;
-
-    //         // Polish tip: Disable the button so the player can't click it again as their second guess
-    //         // making the button with alpha
-    //         CardsButtons[firstCardIndex].interactable = false;
-    //     }
-    //     else if (!IsSecondCardGuessed)
-    //     {
-    //         IsSecondCardGuessed = true;
-    //         secondCardIndex = cardIndex;
-    //         CardsButtons[secondCardIndex].image.sprite = allpossiblecardImagesChosen[secondCardIndex];
-
-    //         secondGuessCardName = allpossiblecardImagesChosen[secondCardIndex].name;
-    //         CardsButtons[secondCardIndex].interactable = false;
-
-
-
-    //     }
-    // }
     private void OnCardClick()
     {
         int cardIndex = GetClickedCardIndex();
@@ -171,6 +136,28 @@ public class CardsFieldController : MonoBehaviour
     {
         CardsButtons[cardIndex].interactable = false;
     }
+    private void CheckIfCardsMatch()
+    {
+        totalGameGuesses++;
+
+        if (firstGuessCardName == secondGuessCardName)
+        {
+            countCorrectGuesses++;
+
+            Debug.Log("Puzzle Match");
+
+            // Cards stay revealed
+            // ResetGuesses();
+        }
+        else
+        {
+            Debug.Log("Puzzle don't Match");
+
+            // Flip cards back after short delay
+            //   Invoke(nameof(FlipCardsBack), 1f);
+        }
+    }
+
 
 
 
