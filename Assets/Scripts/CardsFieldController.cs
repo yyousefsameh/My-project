@@ -12,10 +12,12 @@ public class CardsFieldController : MonoBehaviour
 
     [SerializeField] private GameObject CardPrefab;
 
+    readonly int numberOfCards = 6;
+
 
     private void CreateCardsInCardsField()
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < numberOfCards; i++)
         {
             //create a card  
             GameObject card = Instantiate(CardPrefab);
@@ -36,6 +38,27 @@ public class CardsFieldController : MonoBehaviour
         {
             CardsButtons.Add(cards[i].GetComponent<Button>());
             CardsButtons[i].image.sprite = CardBackImage;
+        }
+    }
+
+    private void PrepareCardsMatchingPairs()
+    {
+        int totalCardSlots = CardsButtons.Count;
+        int totalPairsNeeded = totalCardSlots / 2;
+        int cardSpritePointer = 0;
+        //loop through the total number of card slots
+
+        for (int i = 0; i < totalCardSlots; i++)
+        {
+            //to make the loop start from the beginnning of the sprites array again 
+            if (cardSpritePointer == totalPairsNeeded)
+            {
+                cardSpritePointer = 0;
+            }
+            // cards that will be matched in the game not all the card sprites
+            allpossiblecardImagesChosen.Add(allpossibleCardImages[cardSpritePointer]);
+            cardSpritePointer++;
+
         }
     }
 
@@ -72,6 +95,7 @@ public class CardsFieldController : MonoBehaviour
     void Start()
     {
         GetCards();
+        PrepareCardsMatchingPairs();
         ClickOnACard();
     }
 
