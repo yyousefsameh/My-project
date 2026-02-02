@@ -20,7 +20,7 @@ public class CardsFieldController : MonoBehaviour
     private int firstCardIndex;
     private int secondCardIndex;
 
-    private string firstGuessCard, secondGuessCard;
+    private string firstGuessCardName, secondGuessCardName;
 
     private void CreateCardsInCardsField()
     {
@@ -79,36 +79,103 @@ public class CardsFieldController : MonoBehaviour
         }
     }
 
+    // private void OnCardClick()
+    // {
+    //     // 1. Get the name of the EXACT button that was just clicked
+    //     string clickedName = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name;
+    //     int cardIndex = int.Parse(clickedName);
+
+
+
+
+
+    //     if (!IsFirstCardGuessed)
+    //     {
+    //         IsFirstCardGuessed = true;
+    //         firstCardIndex = cardIndex;
+    //         // Change the sprite of the button to the on of the sprites in the array of chosen sprite cards
+    //         CardsButtons[firstCardIndex].image.sprite = allpossiblecardImagesChosen[firstCardIndex];
+
+    //         firstGuessCardName = allpossiblecardImagesChosen[firstCardIndex].name;
+
+    //         // Polish tip: Disable the button so the player can't click it again as their second guess
+    //         // making the button with alpha
+    //         CardsButtons[firstCardIndex].interactable = false;
+    //     }
+    //     else if (!IsSecondCardGuessed)
+    //     {
+    //         IsSecondCardGuessed = true;
+    //         secondCardIndex = cardIndex;
+    //         CardsButtons[secondCardIndex].image.sprite = allpossiblecardImagesChosen[secondCardIndex];
+
+    //         secondGuessCardName = allpossiblecardImagesChosen[secondCardIndex].name;
+    //         CardsButtons[secondCardIndex].interactable = false;
+
+
+
+    //     }
+    // }
     private void OnCardClick()
     {
-        // 1. Get the name of the EXACT button that was just clicked
-        string clickedName = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name;
-        int cardIndex = int.Parse(clickedName);
+        int cardIndex = GetClickedCardIndex();
 
         if (!IsFirstCardGuessed)
         {
-            IsFirstCardGuessed = true;
-            firstCardIndex = cardIndex;
-            // Change the sprite of the button to the on of the sprites in the array of chosen sprite cards
-            CardsButtons[firstCardIndex].image.sprite = allpossiblecardImagesChosen[firstCardIndex];
-
-            // Polish tip: Disable the button so the player can't click it again as their second guess
-            // making the button with alpha
-            CardsButtons[firstCardIndex].interactable = false;
+            HandleFirstCardGuess(cardIndex);
         }
         else if (!IsSecondCardGuessed)
         {
-            IsSecondCardGuessed = true;
-            secondCardIndex = cardIndex;
-            CardsButtons[secondCardIndex].image.sprite = allpossiblecardImagesChosen[secondCardIndex];
-
-            CardsButtons[secondCardIndex].interactable = false;
-
-
-            // Start the check to see if they match!
-
+            HandleSecondCardGuess(cardIndex);
         }
     }
+
+    private int GetClickedCardIndex()
+    {
+        string clickedName = UnityEngine.EventSystems.EventSystem
+            .current
+            .currentSelectedGameObject
+            .name;
+
+        return int.Parse(clickedName);
+    }
+    private void HandleFirstCardGuess(int cardIndex)
+    {
+        IsFirstCardGuessed = true;
+        firstCardIndex = cardIndex;
+
+        RevealCard(cardIndex);
+
+        firstGuessCardName = allpossiblecardImagesChosen[cardIndex].name;
+
+        DisableCard(cardIndex);
+    }
+    private void HandleSecondCardGuess(int cardIndex)
+    {
+        IsSecondCardGuessed = true;
+        secondCardIndex = cardIndex;
+
+        RevealCard(cardIndex);
+
+        secondGuessCardName = allpossiblecardImagesChosen[cardIndex].name;
+
+        DisableCard(cardIndex);
+
+    }
+    private void RevealCard(int cardIndex)
+    {
+        CardsButtons[cardIndex].image.sprite =
+            allpossiblecardImagesChosen[cardIndex];
+    }
+
+    private void DisableCard(int cardIndex)
+    {
+        CardsButtons[cardIndex].interactable = false;
+    }
+
+
+
+
+
 
 
     // Start is called before the first frame update
