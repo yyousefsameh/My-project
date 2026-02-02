@@ -453,6 +453,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90631e290a1127545a471c9d4e2cad07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardsFieldController
+  CardBackImage: {fileID: -582956604735398739, guid: 88ecc341a2c25424fb10249d8ed39905, type: 3}
+  allpossibleCardImages: []
+  allpossiblecardImagesChosen: []
+  CardsButtons: []
   CardsField: {fileID: 1330786860}
   CardPrefab: {fileID: 7752103955595616524, guid: f9becb217c93b144ea65953b8d40f81d, type: 3}
 --- !u!1 &1840464486
