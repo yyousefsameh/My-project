@@ -39,22 +39,22 @@ public class CardsFieldController : MonoBehaviour
         }
     }
 
-    //Click on a card
-    // private void ClickOnACard()
-    // {
-    //     foreach (Button cardButton in CardsButtons)
-    //     {
-    //         //when a card is clicked on it will call the function of OnCardClick
-    //         cardButton.onClick.AddListener(() => OnCardClick());
-    //     }
-    // }
+    // Click on a card
+    private void ClickOnACard()
+    {
+        foreach (Button cardButton in CardsButtons)
+        {
+            //when a card is clicked on it will call the function of OnCardClick
+            cardButton.onClick.AddListener(() => OnCardClick());
+        }
+    }
 
-    // private void OnCardClick()
-    // {
+    private void OnCardClick()
+    {
 
 
 
-    // }
+    }
 
 
     // Start is called before the first frame update
@@ -72,7 +72,7 @@ public class CardsFieldController : MonoBehaviour
     void Start()
     {
         GetCards();
-        // ClickOnACard();
+        ClickOnACard();
     }
 
 
