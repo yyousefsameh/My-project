@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class CardsFieldController : MonoBehaviour
 {
+    [SerializeField] private Sprite CardBack;
     [SerializeField] private List<Button> CardsButtons = new();
     [SerializeField] private Transform CardsField;
 
@@ -32,8 +33,11 @@ public class CardsFieldController : MonoBehaviour
         for (int i = 0; i < cards.Length; i++)
         {
             CardsButtons.Add(cards[i].GetComponent<Button>());
+            CardsButtons[i].image.sprite = CardBack;
         }
     }
+
+    // Start is called before the first frame update
     private void Awake()
     {
         CreateCardsInCardsField();
@@ -42,9 +46,5 @@ public class CardsFieldController : MonoBehaviour
     {
         GetCards();
     }
-
-
-    // Start is called before the first frame update
-
 
 }
