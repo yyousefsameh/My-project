@@ -13,7 +13,14 @@ public class CardsFieldController : MonoBehaviour
     [SerializeField] private GameObject CardPrefab;
 
     readonly int numberOfCards = 6;
+    private bool IsFirstCardGuessed;
+    private bool IsSecondCardGuessed;
+    private int totalGameGuesses;
+    private int countCorrectGuesses = 0;
+    private int firstCardIndex;
+    private int secondCardIndex;
 
+    private string firstGuessCard, secondGuessCard;
 
     private void CreateCardsInCardsField()
     {
@@ -22,7 +29,7 @@ public class CardsFieldController : MonoBehaviour
             //create a card  
             GameObject card = Instantiate(CardPrefab);
             // To give the card a name as a game object in hierarchy
-            card.name = "Card" + i;
+            card.name = "" + i;
             //To Attach the card to the CardsField
             card.transform.SetParent(CardsField, false);
 
@@ -74,9 +81,33 @@ public class CardsFieldController : MonoBehaviour
 
     private void OnCardClick()
     {
+        // 1. Get the name of the EXACT button that was just clicked
+        string clickedName = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name;
+        int cardIndex = int.Parse(clickedName);
+
+        if (!IsFirstCardGuessed)
+        {
+            IsFirstCardGuessed = true;
+            firstCardIndex = cardIndex;
+            // Change the sprite of the button to the on of the sprites in the array of chosen sprite cards
+            CardsButtons[firstCardIndex].image.sprite = allpossiblecardImagesChosen[firstCardIndex];
+
+            // Polish tip: Disable the button so the player can't click it again as their second guess
+            // making the button with alpha
+            CardsButtons[firstCardIndex].interactable = false;
+        }
+        else if (!IsSecondCardGuessed)
+        {
+            IsSecondCardGuessed = true;
+            secondCardIndex = cardIndex;
+            CardsButtons[secondCardIndex].image.sprite = allpossiblecardImagesChosen[secondCardIndex];
+
+            CardsButtons[secondCardIndex].interactable = false;
 
 
+            // Start the check to see if they match!
 
+        }
     }
 
 
