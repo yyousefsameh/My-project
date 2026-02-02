@@ -122,7 +122,7 @@ public class CardsFieldController : MonoBehaviour
         RevealCard(cardIndex);
 
         secondGuessCardName = allpossiblecardImagesChosen[cardIndex].name;
-
+        CheckIfCardsMatch();
         DisableCard(cardIndex);
 
     }
@@ -162,9 +162,14 @@ public class CardsFieldController : MonoBehaviour
         CardsButtons[firstCardIndex].image.sprite = CardBackImage;
         CardsButtons[secondCardIndex].image.sprite = CardBackImage;
 
-
-
+        EnableCardsClicksOn();
         ResetGuesses();
+    }
+
+    private void EnableCardsClicksOn()
+    {
+        CardsButtons[firstCardIndex].interactable = true;
+        CardsButtons[secondCardIndex].interactable = true;
     }
 
     private void ResetGuesses()
