@@ -157,7 +157,15 @@ public class CardsFieldController : MonoBehaviour
         }
     }
 
+    private void FlipCardsBackToItsOriginalPosition()
+    {
+        CardsButtons[firstCardIndex].image.sprite = CardBackImage;
+        CardsButtons[secondCardIndex].image.sprite = CardBackImage;
 
+
+
+        ResetGuesses();
+    }
 
     private void ResetGuesses()
     {
