@@ -399,7 +399,7 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 70, y: 70}
+  m_CellSize: {x: 150, y: 150}
   m_Spacing: {x: 30, y: 5}
   m_Constraint: 1
   m_ConstraintCount: 3
@@ -459,6 +459,7 @@ MonoBehaviour:
   CardsButtons: []
   CardsField: {fileID: 1330786860}
   CardPrefab: {fileID: 7752103955595616524, guid: f9becb217c93b144ea65953b8d40f81d, type: 3}
+  timeToChooseSecondCard: 2
 --- !u!1 &1840464486
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,10 +587,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
