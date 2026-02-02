@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardsFieldController : MonoBehaviour
 {
+    [SerializeField] private List<Button> CardsButtons = new();
     [SerializeField] private Transform CardsField;
 
     [SerializeField] private GameObject CardPrefab;
@@ -21,11 +24,27 @@ public class CardsFieldController : MonoBehaviour
         }
 
     }
-    // Start is called before the first frame update
+
+
+    private void GetCards()
+    {
+        GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
+        for (int i = 0; i < cards.Length; i++)
+        {
+            CardsButtons.Add(cards[i].GetComponent<Button>());
+        }
+    }
     private void Awake()
     {
         CreateCardsInCardsField();
     }
+    void Start()
+    {
+        GetCards();
+    }
+
+
+    // Start is called before the first frame update
 
 
 }
