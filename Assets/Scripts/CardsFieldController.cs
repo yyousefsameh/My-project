@@ -146,16 +146,23 @@ public class CardsFieldController : MonoBehaviour
 
             Debug.Log("Puzzle Match");
 
-            // Cards stay revealed
-            // ResetGuesses();
+            ResetGuesses();
         }
         else
         {
             Debug.Log("Puzzle don't Match");
 
-            // Flip cards back after short delay
-            //   Invoke(nameof(FlipCardsBack), 1f);
+
+
         }
+    }
+
+
+
+    private void ResetGuesses()
+    {
+        IsFirstCardGuessed = false;
+        IsSecondCardGuessed = false;
     }
 
 
