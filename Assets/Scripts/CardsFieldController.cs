@@ -163,12 +163,14 @@ public class CardsFieldController : MonoBehaviour
             countCorrectGuesses++;
 
             Debug.Log("Puzzle Match");
+            PlaySpecificCardSound(secondCardIndex, 2);
 
             ResetGuesses();
         }
         else
         {
             Debug.Log("Puzzle don't Match");
+            PlaySpecificCardSound(secondCardIndex, 3);
             Invoke(nameof(FlipCardsBackToItsOriginalPosition), 1f);
         }
     }
@@ -232,17 +234,15 @@ public class CardsFieldController : MonoBehaviour
     private void PlaySpecificCardSound(int cardIndex, int soundIndex)
     {
         // Get all AudioSource components on the specific card clicked
-        AudioSource[] sources = CardsButtons[cardIndex].GetComponents<AudioSource>();
+        AudioSource[] CardAudioSources = CardsButtons[cardIndex].GetComponents<AudioSource>();
 
         // Safety check: make sure the index we want exists
-        if (sources.Length > soundIndex)
+        // The "Pro" way to check an index
+        if (soundIndex >= 0 && soundIndex < CardAudioSources.Length)
         {
-            sources[soundIndex].Play();
+            CardAudioSources[soundIndex].Play();
         }
-        else
-        {
-            Debug.LogWarning($"Bro, you tried to play sound index {soundIndex}, but the card only has {sources.Length} sources!");
-        }
+
     }
 
 
