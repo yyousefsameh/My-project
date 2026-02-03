@@ -192,8 +192,13 @@ public class CardsFieldController : MonoBehaviour
             cardPairMissMatchAudioSource.Play();
             Invoke(nameof(FlipCardsBackToItsOriginalPosition), 1.5f);
         }
-        totalGuessesText.text = "Total Guesses = " + totalGameGuesses;
+        TotalGameGuesses();
 
+    }
+
+    private void TotalGameGuesses()
+    {
+        totalGuessesText.text = "Total Guesses = " + totalGameGuesses;
     }
 
     private void CorrectGuesses()
