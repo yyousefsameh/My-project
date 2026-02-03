@@ -14,6 +14,11 @@ public class CardsFieldController : MonoBehaviour
 
     [SerializeField] private float timeToChooseSecondCard = 2f;
 
+
+
+
+
+
     readonly int numberOfCards = 6;
     private bool IsFirstCardGuessed;
     private bool IsSecondCardGuessed;
@@ -141,7 +146,12 @@ public class CardsFieldController : MonoBehaviour
     {
         CardsButtons[cardIndex].image.sprite =
             allpossiblecardImagesChosen[cardIndex];
+
+
+        PlaySpecificCardSound(cardIndex, 0);
+
     }
+
 
 
     private void CheckIfCardsMatch()
@@ -219,7 +229,21 @@ public class CardsFieldController : MonoBehaviour
 
 
 
+    private void PlaySpecificCardSound(int cardIndex, int soundIndex)
+    {
+        // Get all AudioSource components on the specific card clicked
+        AudioSource[] sources = CardsButtons[cardIndex].GetComponents<AudioSource>();
 
+        // Safety check: make sure the index we want exists
+        if (sources.Length > soundIndex)
+        {
+            sources[soundIndex].Play();
+        }
+        else
+        {
+            Debug.LogWarning($"Bro, you tried to play sound index {soundIndex}, but the card only has {sources.Length} sources!");
+        }
+    }
 
 
     // Start is called before the first frame update
