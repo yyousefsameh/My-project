@@ -1,22 +1,26 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CardsFieldController : MonoBehaviour
 {
+
+
+
+    [SerializeField] TextMeshProUGUI ScoreText, TotalGuessesText, CorrectGuessesText, TimerText;
+    float gameTimeLeftToEnd = 10f;
+    float gameHalfTimeLeftToEnd;
+
+    #region Game Sounds
     [SerializeField] AudioSource cardFlipAudioSource;
     [SerializeField] AudioSource cardFlipBackAudioSource;
     [SerializeField] AudioSource cardPairMatchAudioSource;
     [SerializeField] AudioSource cardPairMissMatchAudioSource;
     [SerializeField] AudioSource gameOverAudioSource;
+    #endregion
 
-    [SerializeField] private Sprite CardBackImage;
-    [SerializeField] private List<Sprite> allpossibleCardImages;
-    [SerializeField] private List<Sprite> allpossiblecardImagesChosen = new();
-    [SerializeField] private List<Button> CardsButtons = new();
-    [SerializeField] private Transform CardsField;
 
-    [SerializeField] private GameObject CardPrefab;
 
     [SerializeField] private float timeToChooseSecondCard = 2f;
 
@@ -24,7 +28,14 @@ public class CardsFieldController : MonoBehaviour
 
 
 
+    #region card variables
+    [SerializeField] private Sprite CardBackImage;
+    [SerializeField] private List<Sprite> allpossibleCardImages;
+    [SerializeField] private List<Sprite> allpossiblecardImagesChosen = new();
+    [SerializeField] private List<Button> CardsButtons = new();
+    [SerializeField] private Transform CardsField;
 
+    [SerializeField] private GameObject CardPrefab;
     readonly int numberOfCards = 6;
     private bool IsFirstCardGuessed;
     private bool IsSecondCardGuessed;
@@ -35,6 +46,8 @@ public class CardsFieldController : MonoBehaviour
     string spritesPath = "Images/Sprites";
 
     private string firstGuessCardName, secondGuessCardName;
+
+    #endregion
 
     private void CreateCardsInCardsField()
     {
@@ -169,8 +182,8 @@ public class CardsFieldController : MonoBehaviour
             countCorrectGuesses++;
 
             Debug.Log("Puzzle Match");
+            CorrectGuessesText.text = "Correct Guesses = " + countCorrectGuesses;
             cardPairMatchAudioSource.Play();
-
             ResetGuesses();
         }
         else
@@ -179,6 +192,9 @@ public class CardsFieldController : MonoBehaviour
             cardPairMissMatchAudioSource.Play();
             Invoke(nameof(FlipCardsBackToItsOriginalPosition), 1f);
         }
+        TotalGuessesText.text = "Total Guesses = " + totalGameGuesses;
+        // Debug.Log("Total Guesses: " + totalGameGuesses);
+        // Debug.Log("Correct Guesses: " + countCorrectGuesses);
     }
 
     private void DisableCardClicks(int cardIndex)
@@ -250,10 +266,31 @@ public class CardsFieldController : MonoBehaviour
     }
     void Start()
     {
+        gameHalfTimeLeftToEnd = gameTimeLeftToEnd / 2;
+        TimerText.text = "Time = " + gameTimeLeftToEnd + " s";
         GetCards();
         PrepareCardsMatchingPairs();
         ClickOnACard();
     }
+
+    void Update()
+    {
+        DecrementGameTimer();
+    }
+
+    private void DecrementGameTimer()
+    {
+        if (gameTimeLeftToEnd > 0)
+        {
+            gameTimeLeftToEnd -= Time.deltaTime;
+            if (gameTimeLeftToEnd < gameHalfTimeLeftToEnd)
+            {
+                TimerText.color = Color.red;
+            }
+        }
+        TimerText.text = "Time = " + gameTimeLeftToEnd.ToString("0") + " s";
+    }
+
     private void LoadAllPossibleCardsSprites()
     {
         allpossibleCardImages = new List<Sprite>(
