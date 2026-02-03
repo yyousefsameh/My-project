@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using TMPro;
@@ -9,7 +10,7 @@ public class CardsFieldController : MonoBehaviour
 
 
     #region UI Variables
-    [SerializeField] TextMeshProUGUI totalGameScoreText, totalGuessesText, correctGuessesText, timerText;
+    [SerializeField] TextMeshProUGUI totalGameScoreText, totalGuessesText, correctGuessesText, timerText, gameConditionText;
     float gameTimeLeftToEnd = 10f;
     float gameHalfTimeLeftToEnd;
     int totalGameScore = 0;
@@ -24,7 +25,7 @@ public class CardsFieldController : MonoBehaviour
     #endregion
 
 
-    bool isGameOver = false;
+    bool isGameEnds = false;
     int totalPairs;
 
     [SerializeField] private float timeToChooseSecondCard = 2f;
@@ -147,7 +148,7 @@ public class CardsFieldController : MonoBehaviour
         // get the name of a certain sprite
         firstGuessCardName = allpossiblecardImagesChosen[cardIndex].name;
 
-        DisableCertainCardsByIndexClicks(cardIndex);
+        DisableCardClicks(cardIndex);
 
 
         Invoke(nameof(AutoFlipFirstCard), timeToChooseSecondCard);
@@ -161,7 +162,7 @@ public class CardsFieldController : MonoBehaviour
 
         secondGuessCardName = allpossiblecardImagesChosen[cardIndex].name;
         CheckIfCardsMatch();
-        DisableCertainCardsByIndexClicks(cardIndex);
+        DisableCardClicks(cardIndex);
 
     }
 
@@ -210,7 +211,10 @@ public class CardsFieldController : MonoBehaviour
         countCorrectGuesses++;
         correctGuessesText.text = "Correct Guesses = " + countCorrectGuesses;
 
-
+        if (countCorrectGuesses == totalPairs && gameTimeLeftToEnd > 0)
+        {
+            GameWin();
+        }
     }
 
 
@@ -220,7 +224,7 @@ public class CardsFieldController : MonoBehaviour
         totalGameScoreText.text = "Score = " + totalGameScore;
     }
 
-    private void DisableCertainCardsByIndexClicks(int cardIndex)
+    private void DisableCardClicks(int cardIndex)
     {
         CardsButtons[cardIndex].interactable = false;
     }
@@ -283,15 +287,30 @@ public class CardsFieldController : MonoBehaviour
 
     private void GameOver()
     {
-        if (isGameOver) return;
+        if (isGameEnds) return;
 
-        isGameOver = true;
+        isGameEnds = true;
+        PlayerConditionInGame(0);
         DisableAllCards();
         gameOverAudioSource.Play();
         Debug.Log("Game Over");
     }
 
+    private void GameWin()
+    {
+        if (isGameEnds) return;
 
+        isGameEnds = true;
+        PlayerConditionInGame(1);
+        DisableAllCards();
+        Debug.Log("Player Wins!");
+    }
+
+    private void PlayerConditionInGame(int playerCondition)
+    {
+        gameConditionText.gameObject.SetActive(true);
+        gameConditionText.text = playerCondition == 1 ? "You Win" : "You Lose";
+    }
 
     private void DisableAllCards()
     {
@@ -327,7 +346,7 @@ public class CardsFieldController : MonoBehaviour
 
     private void DecrementGameTimer()
     {
-        if (isGameOver) return;
+        if (isGameEnds) return;
 
         if (gameTimeLeftToEnd > 0)
         {
