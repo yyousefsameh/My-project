@@ -8,9 +8,10 @@ public class CardsFieldController : MonoBehaviour
 
 
 
-    [SerializeField] TextMeshProUGUI ScoreText, TotalGuessesText, CorrectGuessesText, TimerText;
+    [SerializeField] TextMeshProUGUI totalGameScoreText, totalGuessesText, correctGuessesText, timerText;
     float gameTimeLeftToEnd = 10f;
     float gameHalfTimeLeftToEnd;
+    int totalGameScore = 0;
 
     #region Game Sounds
     [SerializeField] AudioSource cardFlipAudioSource;
@@ -179,22 +180,32 @@ public class CardsFieldController : MonoBehaviour
 
         if (firstGuessCardName == secondGuessCardName)
         {
-            countCorrectGuesses++;
-
             Debug.Log("Puzzle Match");
-            CorrectGuessesText.text = "Correct Guesses = " + countCorrectGuesses;
             cardPairMatchAudioSource.Play();
+            TotalGameScore();
+            CorrectGuesses();
             ResetGuesses();
         }
         else
         {
             Debug.Log("Puzzle don't Match");
             cardPairMissMatchAudioSource.Play();
-            Invoke(nameof(FlipCardsBackToItsOriginalPosition), 1f);
+            Invoke(nameof(FlipCardsBackToItsOriginalPosition), 1.5f);
         }
-        TotalGuessesText.text = "Total Guesses = " + totalGameGuesses;
-        // Debug.Log("Total Guesses: " + totalGameGuesses);
-        // Debug.Log("Correct Guesses: " + countCorrectGuesses);
+        totalGuessesText.text = "Total Guesses = " + totalGameGuesses;
+
+    }
+
+    private void CorrectGuesses()
+    {
+        countCorrectGuesses++;
+        correctGuessesText.text = "Correct Guesses = " + countCorrectGuesses;
+    }
+
+    private void TotalGameScore()
+    {
+        totalGameScore += 100;
+        totalGameScoreText.text = "Score = " + totalGameScore;
     }
 
     private void DisableCardClicks(int cardIndex)
@@ -267,7 +278,7 @@ public class CardsFieldController : MonoBehaviour
     void Start()
     {
         gameHalfTimeLeftToEnd = gameTimeLeftToEnd / 2;
-        TimerText.text = "Time = " + gameTimeLeftToEnd + " s";
+        timerText.text = "Time = " + gameTimeLeftToEnd + " s";
         GetCards();
         PrepareCardsMatchingPairs();
         ClickOnACard();
@@ -285,10 +296,10 @@ public class CardsFieldController : MonoBehaviour
             gameTimeLeftToEnd -= Time.deltaTime;
             if (gameTimeLeftToEnd < gameHalfTimeLeftToEnd)
             {
-                TimerText.color = Color.red;
+                timerText.color = Color.red;
             }
         }
-        TimerText.text = "Time = " + gameTimeLeftToEnd.ToString("0") + " s";
+        timerText.text = "Time = " + gameTimeLeftToEnd.ToString("0") + " s";
     }
 
     private void LoadAllPossibleCardsSprites()
