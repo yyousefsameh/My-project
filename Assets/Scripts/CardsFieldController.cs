@@ -11,7 +11,16 @@ public class CardsFieldController : MonoBehaviour
 
 
     #region UI Variables
+    [SerializeField] private GameObject menuCanvas;
+    [SerializeField] private GameObject cardsFieldCanvas;
+
     [SerializeField] TextMeshProUGUI totalGameWinsText, totalGameScoreText, totalGuessesText, correctGuessesText, timerText, gameConditionText;
+    [SerializeField] private TMP_InputField inputRows;
+    [SerializeField] private TMP_InputField inputColumns;
+    //Defualt grid layout values
+    private int girdLayoutRows = 2;
+    private int gridLayoutColumns = 3;
+
     float gameTimeLeftToEnd = 10f;
     float gameHalfTimeLeftToEnd;
     int totalGameScore = 0;
@@ -51,7 +60,11 @@ public class CardsFieldController : MonoBehaviour
     [SerializeField] private Transform CardsField;
 
     [SerializeField] private GameObject CardPrefab;
-    readonly int numberOfCards = 6;
+
+
+
+
+    private int numberOfCards => girdLayoutRows * gridLayoutColumns;
     private bool IsFirstCardGuessed;
     private bool IsSecondCardGuessed;
     private int totalGameGuesses;
@@ -336,21 +349,61 @@ public class CardsFieldController : MonoBehaviour
 
 
     // Start is called before the first frame update
+    // called even when the object is disabled
     private void Awake()
     {
+        // Hide cards field canvas at the beginning
+        if (cardsFieldCanvas != null) cardsFieldCanvas.SetActive(false);
+    }
+
+    private void ValidateGridLayoutSettings()
+    {
+        // If input fields exist, try reading them
+        if (inputRows != null && inputColumns != null)
+        {
+
+            // out to return true or false
+            if (!int.TryParse(inputRows.text, out int rowsInput)) rowsInput = 2;
+            if (!int.TryParse(inputColumns.text, out int columnsInput)) columnsInput = 3;
+
+            girdLayoutRows = rowsInput > 0 && rowsInput <= 5 ? rowsInput : 2;
+            gridLayoutColumns = columnsInput > 0 && columnsInput <= 6 ? columnsInput : 3;
+        }
+
+        // Make sure total cards is even
+        if (girdLayoutRows * gridLayoutColumns % 2 != 0)
+        {
+            gridLayoutColumns += 1;
+        }
+    }
+    public void OnStartGameClicked()
+    {
+        // Hide the menu
+        if (menuCanvas != null) menuCanvas.SetActive(false);
+
+        // Show the game canvas
+        if (cardsFieldCanvas != null) cardsFieldCanvas.SetActive(true);
+
+        // Read player inputs
+        ValidateGridLayoutSettings();
+
+        // Initialize the game
         LoadAllPossibleCardsSprites();
         CreateCardsInCardsField();
-    }
-    void Start()
-    {
-        LoadGameProgress();
-        totalPairs = numberOfCards / 2;
-        gameHalfTimeLeftToEnd = gameTimeLeftToEnd / 2;
-        timerText.text = "Time = " + gameTimeLeftToEnd + " s";
         GetCards();
         PrepareCardsMatchingPairs();
         ClickOnACard();
+
+        // Set total pairs
+        totalPairs = numberOfCards / 2;
+        gameHalfTimeLeftToEnd = gameTimeLeftToEnd / 2;
+        timerText.text = "Time = " + gameTimeLeftToEnd + " s";
+
+        // Load saved progress
+        LoadGameProgress();
     }
+
+
 
     void Update()
     {
@@ -419,8 +472,6 @@ public class CardsFieldController : MonoBehaviour
 
     public void ResetGame()
     {
-
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         foreach (Transform child in CardsField)
         {
