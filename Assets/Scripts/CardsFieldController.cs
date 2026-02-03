@@ -4,6 +4,7 @@ using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CardsFieldController : MonoBehaviour
 {
@@ -30,8 +31,6 @@ public class CardsFieldController : MonoBehaviour
     }
 
     #region Save Keys
-    private const string HIGH_SCORE_KEY = "HighScore";
-    private const string BEST_TIME_KEY = "BestTime";
     private const string TOTAL_WINS_KEY = "TotalWins";
     #endregion
 
@@ -81,6 +80,7 @@ public class CardsFieldController : MonoBehaviour
     }
 
     #region GetCards and its indices
+    // get the cards as game objects
     private void GetCards()
     {
         GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
@@ -205,7 +205,7 @@ public class CardsFieldController : MonoBehaviour
         {
             Debug.Log("Puzzle don't Match");
             cardPairMissMatchAudioSource.Play();
-            Invoke(nameof(FlipCardsBackToItsOriginalPosition), 1.5f);
+            Invoke(nameof(FlipCardsBackToItsOriginalPositionWhenMissMatch), 1.5f);
         }
         TotalGameGuesses();
 
@@ -241,7 +241,7 @@ public class CardsFieldController : MonoBehaviour
 
 
     #region CardFlipping
-    private void FlipCardsBackToItsOriginalPosition()
+    private void FlipCardsBackToItsOriginalPositionWhenMissMatch()
     {
         FlipFirstCardBack();
         FlipSecondCardBack();
@@ -415,5 +415,27 @@ public class CardsFieldController : MonoBehaviour
         totalGameWinsText.gameObject.SetActive(true);
         totalGameWinsText.text = "Total Wins = " + savedWins.ToString();
     }
+
+
+    public void ResetGame()
+    {
+
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        foreach (Transform child in CardsField)
+        {
+            Destroy(child.gameObject);
+        }
+        PlayerPrefs.DeleteAll();
+        // Clear lists
+        CardsButtons.Clear();
+        allpossiblecardImagesChosen.Clear();
+
+        // Recreate cards and restart game
+        CreateCardsInCardsField();
+        GetCards();
+        PrepareCardsMatchingPairs();
+        ClickOnACard();
+    }
+
 }
-//
