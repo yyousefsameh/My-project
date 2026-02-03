@@ -453,7 +453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90631e290a1127545a471c9d4e2cad07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardsFieldController
-  CardBackImage: {fileID: -582956604735398739, guid: 88ecc341a2c25424fb10249d8ed39905, type: 3}
+  CardBackImage: {fileID: -4825131814984682646, guid: c7c4de67ada017041a62bace9c0e2162, type: 3}
   allpossibleCardImages: []
   allpossiblecardImagesChosen: []
   CardsButtons: []
