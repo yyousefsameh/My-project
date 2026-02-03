@@ -286,14 +286,20 @@ public class CardsFieldController : MonoBehaviour
         if (isGameOver) return;
 
         isGameOver = true;
-
+        DisableAllCards();
         gameOverAudioSource.Play();
         Debug.Log("Game Over");
     }
 
 
 
-
+    private void DisableAllCards()
+    {
+        foreach (Button card in CardsButtons)
+        {
+            card.interactable = false;
+        }
+    }
 
     #endregion
 
