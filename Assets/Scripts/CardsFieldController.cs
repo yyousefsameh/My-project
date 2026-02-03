@@ -184,25 +184,27 @@ public class CardsFieldController : MonoBehaviour
     #region CardFlipping
     private void FlipCardsBackToItsOriginalPosition()
     {
-        FlipFirstCard();
-        FlipSecondCard();
+        FlipFirstCardBack();
+        FlipSecondCardBack();
         EnableCardsClicksOn();
         ResetGuesses();
     }
-    private void FlipFirstCard()
+    private void FlipFirstCardBack()
     {
         CardsButtons[firstCardIndex].image.sprite = CardBackImage;
+        PlaySpecificCardSound(firstCardIndex, 1);
     }
-    private void FlipSecondCard()
+    private void FlipSecondCardBack()
     {
         CardsButtons[secondCardIndex].image.sprite = CardBackImage;
+        PlaySpecificCardSound(secondCardIndex, 1);
     }
     private void AutoFlipFirstCard()
     {
         // Only flip if player didn't choose second card
         if (IsFirstCardGuessed && !IsSecondCardGuessed)
         {
-            FlipFirstCard();
+            FlipFirstCardBack();
             EnableFirstCardClicks();
             ResetGuesses();
         }
