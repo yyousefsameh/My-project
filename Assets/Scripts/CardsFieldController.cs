@@ -29,6 +29,11 @@ public class CardsFieldController : MonoBehaviour
         Win
     }
 
+    #region Save Keys
+    private const string HIGH_SCORE_KEY = "HighScore";
+    private const string BEST_TIME_KEY = "BestTime";
+    private const string TOTAL_WINS_KEY = "TotalWins";
+    #endregion
 
     bool isGameEnds = false;
     int totalPairs;
@@ -306,6 +311,7 @@ public class CardsFieldController : MonoBehaviour
         if (isGameEnds) return;
 
         isGameEnds = true;
+        SaveProgress();
         PlayerConditionInGame(GameCondition.Win);
         DisableAllCards();
         Debug.Log("Player Wins!");
@@ -386,5 +392,31 @@ public class CardsFieldController : MonoBehaviour
         IsFirstCardGuessed = false;
         IsSecondCardGuessed = false;
     }
+
+
+    private void SaveProgress()
+    {
+        int savedHighScore = PlayerPrefs.GetInt(HIGH_SCORE_KEY, 0);
+        float savedBestTime = PlayerPrefs.GetFloat(BEST_TIME_KEY, 0);
+        int savedWins = PlayerPrefs.GetInt(TOTAL_WINS_KEY, 0);
+
+        if (totalGameScore > savedHighScore)
+            PlayerPrefs.SetInt(HIGH_SCORE_KEY, totalGameScore);
+
+        if (gameTimeLeftToEnd > savedBestTime)
+            PlayerPrefs.SetFloat(BEST_TIME_KEY, gameTimeLeftToEnd);
+
+        PlayerPrefs.SetInt(TOTAL_WINS_KEY, savedWins + 1);
+
+        PlayerPrefs.Save();
+    }
+
+
+
+
+
+
+
+
 
 }
