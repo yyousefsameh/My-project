@@ -10,7 +10,7 @@ public class CardsFieldController : MonoBehaviour
 
 
     #region UI Variables
-    [SerializeField] TextMeshProUGUI totalGameScoreText, totalGuessesText, correctGuessesText, timerText, gameConditionText;
+    [SerializeField] TextMeshProUGUI totalGameWinsText, totalGameScoreText, totalGuessesText, correctGuessesText, timerText, gameConditionText;
     float gameTimeLeftToEnd = 10f;
     float gameHalfTimeLeftToEnd;
     int totalGameScore = 0;
@@ -343,6 +343,7 @@ public class CardsFieldController : MonoBehaviour
     }
     void Start()
     {
+        LoadGameProgress();
         totalPairs = numberOfCards / 2;
         gameHalfTimeLeftToEnd = gameTimeLeftToEnd / 2;
         timerText.text = "Time = " + gameTimeLeftToEnd + " s";
@@ -396,27 +397,23 @@ public class CardsFieldController : MonoBehaviour
 
     private void SaveProgress()
     {
-        int savedHighScore = PlayerPrefs.GetInt(HIGH_SCORE_KEY, 0);
-        float savedBestTime = PlayerPrefs.GetFloat(BEST_TIME_KEY, 0);
         int savedWins = PlayerPrefs.GetInt(TOTAL_WINS_KEY, 0);
-
-        if (totalGameScore > savedHighScore)
-            PlayerPrefs.SetInt(HIGH_SCORE_KEY, totalGameScore);
-
-        if (gameTimeLeftToEnd > savedBestTime)
-            PlayerPrefs.SetFloat(BEST_TIME_KEY, gameTimeLeftToEnd);
-
         PlayerPrefs.SetInt(TOTAL_WINS_KEY, savedWins + 1);
-
         PlayerPrefs.Save();
     }
 
 
+    private void LoadGameProgress()
+    {
+        int savedWins = PlayerPrefs.GetInt(TOTAL_WINS_KEY, 0);
+        ShowTotalWinsUI(savedWins);
 
+    }
 
-
-
-
-
-
+    private void ShowTotalWinsUI(int savedWins)
+    {
+        totalGameWinsText.gameObject.SetActive(true);
+        totalGameWinsText.text = "Total Wins = " + savedWins.ToString();
+    }
 }
+//
