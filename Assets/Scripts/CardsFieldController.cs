@@ -23,6 +23,11 @@ public class CardsFieldController : MonoBehaviour
     [SerializeField] AudioSource cardPairMissMatchAudioSource;
     [SerializeField] AudioSource gameOverAudioSource;
     #endregion
+    private enum GameCondition
+    {
+        Lose,
+        Win
+    }
 
 
     bool isGameEnds = false;
@@ -290,7 +295,7 @@ public class CardsFieldController : MonoBehaviour
         if (isGameEnds) return;
 
         isGameEnds = true;
-        PlayerConditionInGame(0);
+        PlayerConditionInGame(GameCondition.Lose);
         DisableAllCards();
         gameOverAudioSource.Play();
         Debug.Log("Game Over");
@@ -301,16 +306,17 @@ public class CardsFieldController : MonoBehaviour
         if (isGameEnds) return;
 
         isGameEnds = true;
-        PlayerConditionInGame(1);
+        PlayerConditionInGame(GameCondition.Win);
         DisableAllCards();
         Debug.Log("Player Wins!");
     }
 
-    private void PlayerConditionInGame(int playerCondition)
+    private void PlayerConditionInGame(GameCondition condition)
     {
         gameConditionText.gameObject.SetActive(true);
-        gameConditionText.text = playerCondition == 1 ? "You Win" : "You Lose";
+        gameConditionText.text = condition == GameCondition.Win ? "You Win" : "You Lose";
     }
+
 
     private void DisableAllCards()
     {
