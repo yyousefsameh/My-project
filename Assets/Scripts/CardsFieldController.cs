@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,11 +8,12 @@ public class CardsFieldController : MonoBehaviour
 {
 
 
-
+    #region UI Variables
     [SerializeField] TextMeshProUGUI totalGameScoreText, totalGuessesText, correctGuessesText, timerText;
     float gameTimeLeftToEnd = 10f;
     float gameHalfTimeLeftToEnd;
     int totalGameScore = 0;
+    #endregion
 
     #region Game Sounds
     [SerializeField] AudioSource cardFlipAudioSource;
@@ -22,6 +24,8 @@ public class CardsFieldController : MonoBehaviour
     #endregion
 
 
+    bool isGameOver = false;
+    int totalPairs;
 
     [SerializeField] private float timeToChooseSecondCard = 2f;
 
@@ -143,7 +147,7 @@ public class CardsFieldController : MonoBehaviour
         // get the name of a certain sprite
         firstGuessCardName = allpossiblecardImagesChosen[cardIndex].name;
 
-        DisableCardClicks(cardIndex);
+        DisableCertainCardsByIndexClicks(cardIndex);
 
 
         Invoke(nameof(AutoFlipFirstCard), timeToChooseSecondCard);
@@ -157,7 +161,7 @@ public class CardsFieldController : MonoBehaviour
 
         secondGuessCardName = allpossiblecardImagesChosen[cardIndex].name;
         CheckIfCardsMatch();
-        DisableCardClicks(cardIndex);
+        DisableCertainCardsByIndexClicks(cardIndex);
 
     }
 
@@ -205,7 +209,10 @@ public class CardsFieldController : MonoBehaviour
     {
         countCorrectGuesses++;
         correctGuessesText.text = "Correct Guesses = " + countCorrectGuesses;
+
+
     }
+
 
     private void TotalGameScore()
     {
@@ -213,7 +220,7 @@ public class CardsFieldController : MonoBehaviour
         totalGameScoreText.text = "Score = " + totalGameScore;
     }
 
-    private void DisableCardClicks(int cardIndex)
+    private void DisableCertainCardsByIndexClicks(int cardIndex)
     {
         CardsButtons[cardIndex].interactable = false;
     }
@@ -272,6 +279,23 @@ public class CardsFieldController : MonoBehaviour
 
 
 
+    #region Game State
+
+    private void GameOver()
+    {
+        if (isGameOver) return;
+
+        isGameOver = true;
+
+        gameOverAudioSource.Play();
+        Debug.Log("Game Over");
+    }
+
+
+
+
+
+    #endregion
 
 
     // Start is called before the first frame update
@@ -282,6 +306,7 @@ public class CardsFieldController : MonoBehaviour
     }
     void Start()
     {
+        totalPairs = numberOfCards / 2;
         gameHalfTimeLeftToEnd = gameTimeLeftToEnd / 2;
         timerText.text = "Time = " + gameTimeLeftToEnd + " s";
         GetCards();
@@ -296,16 +321,28 @@ public class CardsFieldController : MonoBehaviour
 
     private void DecrementGameTimer()
     {
+        if (isGameOver) return;
+
         if (gameTimeLeftToEnd > 0)
         {
             gameTimeLeftToEnd -= Time.deltaTime;
+
             if (gameTimeLeftToEnd < gameHalfTimeLeftToEnd)
             {
                 timerText.color = Color.red;
             }
+
+            if (gameTimeLeftToEnd <= 0 && countCorrectGuesses < totalPairs)
+            {
+                gameTimeLeftToEnd = 0;
+                GameOver();
+            }
         }
+
         timerText.text = "Time = " + gameTimeLeftToEnd.ToString("0") + " s";
     }
+
+
 
     private void LoadAllPossibleCardsSprites()
     {
