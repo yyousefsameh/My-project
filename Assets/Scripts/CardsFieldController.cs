@@ -479,8 +479,8 @@ public class CardsFieldController : MonoBehaviour
         }
         PlayerPrefs.DeleteAll();
         // Clear lists
-        CardsButtons.Clear();
-        allpossiblecardImagesChosen.Clear();
+        // CardsButtons.Clear();
+        // allpossiblecardImagesChosen.Clear();
 
         // Recreate cards and restart game
         CreateCardsInCardsField();
