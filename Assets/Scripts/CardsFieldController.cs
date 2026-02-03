@@ -4,6 +4,12 @@ using UnityEngine.UI;
 
 public class CardsFieldController : MonoBehaviour
 {
+    [SerializeField] AudioSource cardFlipAudioSource;
+    [SerializeField] AudioSource cardFlipBackAudioSource;
+    [SerializeField] AudioSource cardPairMatchAudioSource;
+    [SerializeField] AudioSource cardPairMissMatchAudioSource;
+    [SerializeField] AudioSource gameOverAudioSource;
+
     [SerializeField] private Sprite CardBackImage;
     [SerializeField] private List<Sprite> allpossibleCardImages;
     [SerializeField] private List<Sprite> allpossiblecardImagesChosen = new();
@@ -147,8 +153,8 @@ public class CardsFieldController : MonoBehaviour
         CardsButtons[cardIndex].image.sprite =
             allpossiblecardImagesChosen[cardIndex];
 
+        cardFlipAudioSource.Play();
 
-        PlaySpecificCardSound(cardIndex, 0);
 
     }
 
@@ -163,14 +169,14 @@ public class CardsFieldController : MonoBehaviour
             countCorrectGuesses++;
 
             Debug.Log("Puzzle Match");
-            PlaySpecificCardSound(secondCardIndex, 2);
+            cardPairMatchAudioSource.Play();
 
             ResetGuesses();
         }
         else
         {
             Debug.Log("Puzzle don't Match");
-            PlaySpecificCardSound(secondCardIndex, 3);
+            cardPairMissMatchAudioSource.Play();
             Invoke(nameof(FlipCardsBackToItsOriginalPosition), 1f);
         }
     }
@@ -192,12 +198,13 @@ public class CardsFieldController : MonoBehaviour
     private void FlipFirstCardBack()
     {
         CardsButtons[firstCardIndex].image.sprite = CardBackImage;
-        PlaySpecificCardSound(firstCardIndex, 1);
+        cardFlipBackAudioSource.Play();
+
     }
     private void FlipSecondCardBack()
     {
         CardsButtons[secondCardIndex].image.sprite = CardBackImage;
-        PlaySpecificCardSound(secondCardIndex, 1);
+        cardFlipBackAudioSource.Play();
     }
     private void AutoFlipFirstCard()
     {
@@ -233,19 +240,6 @@ public class CardsFieldController : MonoBehaviour
 
 
 
-    private void PlaySpecificCardSound(int cardIndex, int soundIndex)
-    {
-        // Get all AudioSource components on the specific card clicked
-        AudioSource[] CardAudioSources = CardsButtons[cardIndex].GetComponents<AudioSource>();
-
-        // Safety check: make sure the index we want exists
-        // The "Pro" way to check an index
-        if (soundIndex >= 0 && soundIndex < CardAudioSources.Length)
-        {
-            CardAudioSources[soundIndex].Play();
-        }
-
-    }
 
 
     // Start is called before the first frame update
